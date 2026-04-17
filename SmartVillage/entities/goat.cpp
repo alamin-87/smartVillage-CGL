@@ -4,22 +4,35 @@
 #include <cstdlib>
 #include "../algorithms/midpoint_circle.h"
 #include "../algorithms/bresenham.h"
+#include "../systems/sound_manager.h"
 
 Goat::Goat(float x, float y) {
     posX = x; posY = y; baseY = y;
     moveTime = 0.0f; hopTimer = 0.0f; hopping = false;
+    eating = false; eatingTimer = 0.0f;
 }
 
 void Goat::update() {
-    moveTime += 0.03f;
-    posX += 0.001f * sin(moveTime);
+    if (rand() % 1500 == 0) SoundManager::getInstance().playGoat();
+    if (!hopping && !eating && rand() % 200 == 0) eating = true;
     
-    hopTimer += 0.05f;
-    if (!hopping && rand() % 200 == 0) hopping = true;
-    if (hopping) {
-        posY = baseY + fabsf(sin(hopTimer * 2.0f)) * 0.04f;
-        if (sin(hopTimer * 2.0f) < 0.01f && hopTimer > 1.0f) {
-            hopping = false; posY = baseY; hopTimer = 0.0f;
+    if (eating) {
+        eatingTimer += 0.05f;
+        if (eatingTimer > 6.0f) {
+            eating = false;
+            eatingTimer = 0.0f;
+        }
+    } else {
+        moveTime += 0.03f;
+        posX += 0.001f * sin(moveTime);
+        
+        hopTimer += 0.05f;
+        if (!hopping && rand() % 200 == 0) hopping = true;
+        if (hopping) {
+            posY = baseY + fabsf(sin(hopTimer * 2.0f)) * 0.04f;
+            if (sin(hopTimer * 2.0f) < 0.01f && hopTimer > 1.0f) {
+                hopping = false; posY = baseY; hopTimer = 0.0f;
+            }
         }
     }
 }
@@ -43,6 +56,14 @@ void Goat::render() {
     drawBresenhamLine( 0.02f, 0.01f,  0.02f, -0.04f);
     drawBresenhamLine( 0.04f, 0.01f,  0.04f, -0.04f);
 
+    // Head Group
+    glPushMatrix();
+    if (eating) {
+        glTranslatef(0.05f, 0.03f, 0.0f); // Pivot
+        glRotatef(-45.0f + sin(eatingTimer * 8.0f) * 5.0f, 0.0f, 0.0f, 1.0f);
+        glTranslatef(-0.05f, -0.03f, 0.0f);
+    }
+    
     // Head
     glColor3f(0.7f, 0.65f, 0.6f);
     fillMidpointCircle(0.07f, 0.06f, 0.02f);
@@ -60,6 +81,8 @@ void Goat::render() {
     // Eye
     glColor3f(0.0f, 0.0f, 0.0f);
     fillMidpointCircle(0.078f, 0.065f, 0.003f);
+    
+    glPopMatrix();
 
     // Tail
     glColor3f(0.6f, 0.55f, 0.5f);

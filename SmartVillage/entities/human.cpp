@@ -16,19 +16,24 @@ Human::Human(float startX, float startY) {
 void Human::update() {
     if (isSitting) return;
 
-    posX += speed;
-    if (posX > 6.0f) posX = -6.0f;
-    if (posX < -6.0f) posX = 6.0f;
+    if (speed != 0.0f) {
+        posX += speed;
+        if (posX > maxX) posX = minX;
+        if (posX < minX) posX = maxX;
 
-    legAngle += legDir * 2.0f;
-    if (legAngle > 20.0f || legAngle < -20.0f) legDir *= -1.0f;
+        legAngle += legDir * 2.0f;
+        if (legAngle > 20.0f || legAngle < -20.0f) legDir *= -1.0f;
+    } else {
+        legAngle = 0.0f;
+    }
 }
 
 void Human::render() {
     glPushMatrix();
     glTranslatef(posX, posY, 0.0f);
 
-    float scale = 1.1f;
+    // Changed scale to 0.5f to make humans even smaller
+    float scale = 0.5f;
     glScalef(scale, scale, 1.0f);
 
     // Skin color

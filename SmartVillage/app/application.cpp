@@ -2,6 +2,9 @@
 #include <GL/glut.h>
 #include <iostream>
 #include <cmath>
+#include "../smart/energy_system.h"
+#include "../smart/building_system.h"
+#include "../systems/sound_manager.h"
 
 Application* Application::instance = nullptr;
 
@@ -10,6 +13,7 @@ Application::Application() {
     rural = nullptr;
     urban = nullptr;
     alamin = nullptr;
+    currentSceneId = 1; // Default to Village
     cameraX = 0.0f;
     globalTime = 45.0f; // Start at morning
 }
@@ -30,35 +34,57 @@ void Application::init() {
     rural->init();
     urban->init();
 
-    // Start Alamin in the center of the village
-    alamin = new Alamin(0.0f, -0.65f);
+    // Start Alamin on the road center
+    alamin = new Alamin(0.0f, -0.55f);
 
-    std::cout << "Continuous World Application Initialized. Alamin is ready!" << std::endl;
+    std::cout << "Separated Scene Application Initialized. Alamin is ready!" << std::endl;
 }
 
 void Application::setTargetDestination(int dest) {
-    if (dest == 1) alamin->setTarget(0.0f);        // Village Center
-    else if (dest == 2) alamin->setTarget(2.0f);   // Friend's Rural House (Scene 2 is at X=2.0)
-    else if (dest == 3) alamin->setTarget(4.0f);   // School in Urban District (Scene 3 is at X=4.0)
+    currentSceneId = dest;
+    alamin->setX(0.0f); // Reset Alamin to center of the specific scene
+    cameraX = 0.0f;     // Reset camera for the new scene
 }
 
 void Application::update() {
     // Alamin Movement
     alamin->update();
 
-    // Smooth Camera Follow
-    float diff = alamin->getX() - cameraX;
-    cameraX += diff * 0.05f; // Smooth interpolation
+    // Scene-specific limits
+    float sceneBound = (currentSceneId == 1) ? 6.8f : 0.95f;
+    float camBound = (currentSceneId == 1) ? 5.8f : 0.0f;
 
-    // Sync global time across all scenes
+    // Clamp Alamin to scene
+    if (alamin->getX() > sceneBound) alamin->setX(sceneBound);
+    if (alamin->getX() < -sceneBound) alamin->setX(-sceneBound);
+
+    // Smooth Camera Follow with per-scene clamping
+    float targetCamX = alamin->getX();
+    if (targetCamX > camBound) targetCamX = camBound;
+    if (targetCamX < -camBound) targetCamX = -camBound;
+    
+    float diff = targetCamX - cameraX;
+    cameraX += diff * 0.05f;
+
+    // Sync global time
     globalTime += 0.2f;
     if (globalTime > 360.0f) globalTime = 0.0f;
     isNight = (globalTime > 180.0f);
 
-    // Sync weather and time to scenes implicitly through their own update loops
-    village->update();
-    rural->update();
-    urban->update();
+    // Update ONLY the active scene
+    if (currentSceneId == 1) village->update();
+    else if (currentSceneId == 2) rural->update();
+    else if (currentSceneId == 3) urban->update();
+
+    // Update smart systems
+    int activeLights = isNight ? 6 : 0;
+    int activeBuildings = 6;
+    float outsideTemp = isNight ? 24.0f : 32.0f;
+    if (isRainy) outsideTemp -= 5.0f;
+    if (isStormy) outsideTemp -= 8.0f;
+
+    EnergySystem::getInstance().update(0.016f, isNight, isStormy, activeLights, activeBuildings);
+    BuildingSystem::getInstance().update(0.016f, isNight, outsideTemp);
 }
 
 void Application::render() {
@@ -84,31 +110,20 @@ void Application::render() {
         // but it's better here for consistency)
     }
 
-    // 2. Apply Camera Offset
+    // 2. Camera Offset (Selective for active scene)
     glPushMatrix();
     glTranslatef(-cameraX, 0.0f, 0.0f);
+    
+    // 3. Render only the CURRENT active scene
+    if (currentSceneId == 1) {
+        village->render();
+    } else if (currentSceneId == 2) {
+        rural->render();
+    } else if (currentSceneId == 3) {
+        urban->render();
+    }
 
-    // 3. Draw Scene 1 (Village) at X = 0.0
-    glPushMatrix();
-    village->render();
-    glPopMatrix();
-
-    // 4. Draw Scene 2 (Rural) at X = 2.0
-    glPushMatrix();
-    glTranslatef(2.0f, 0.0f, 0.0f);
-    rural->render();
-    glPopMatrix();
-
-    // 5. Draw Scene 3 (Urban) at X = 4.0
-    glPushMatrix();
-    glTranslatef(4.0f, 0.0f, 0.0f);
-    urban->render();
-    glPopMatrix();
-
-    // 6. Draw Alamin (he exists in the global unified world coordinate space)
-    alamin->render();
-
-    glPopMatrix(); // End Camera Offset
+    glPopMatrix(); 
 
     // 7. Draw HUD in screen space
     hud.render(globalTime, isRainy, isStormy, isWindy);
@@ -133,11 +148,23 @@ void Application::handleInput(unsigned char key) {
             village->setDayNight(true); rural->setDayNight(true); urban->setDayNight(true); 
             globalTime = 200.0f; break;
         case 'r': 
-            village->toggleRain(); rural->toggleRain(); urban->toggleRain(); break;
+            isRainy = !isRainy;
+            village->toggleRain(); rural->toggleRain(); urban->toggleRain(); 
+            if (isRainy) SoundManager::getInstance().playRain();
+            else SoundManager::getInstance().stopRain();
+            break;
         case 's': 
-            village->toggleStorm(); rural->toggleStorm(); urban->toggleStorm(); break;
+            isStormy = !isStormy;
+            village->toggleStorm(); rural->toggleStorm(); urban->toggleStorm(); 
+            if (isStormy) SoundManager::getInstance().playStorm();
+            else SoundManager::getInstance().stopStorm();
+            break;
         case 'w': 
-            village->toggleWind(); rural->toggleWind(); urban->toggleWind(); break;
+            isWindy = !isWindy;
+            village->toggleWind(); rural->toggleWind(); urban->toggleWind(); 
+            if (isWindy) SoundManager::getInstance().playWind();
+            else SoundManager::getInstance().stopWind();
+            break;
             
         case 27: exit(0); break; // ESC to quit
     }

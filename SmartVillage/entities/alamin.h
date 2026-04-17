@@ -7,6 +7,7 @@ public:
     void update();
     void render();
     void setTarget(float tx);
+    void setX(float x) { posX = x; targetX = x; isWalking = false; }
     float getX() const { return posX; }
     
 private:

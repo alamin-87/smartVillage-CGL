@@ -9,10 +9,13 @@
 #include "../objects/cloud.h"
 #include "../ui/hud.h"
 #include "../entities/human.h"
+#include "../entities/doctor.h"
 #include "../entities/child.h"
 #include "../smart/lighting_system.h"
 #include "../effects/rain_effect.h"
 #include "../effects/storm_effect.h"
+#include "../objects/footpath.h"
+#include "../objects/vehicle.h"
 #include <vector>
 
 class UrbanScene : public Scene {
@@ -39,9 +42,11 @@ private:
     Building *buildings[3];
     Road *mainRoad;
     TrafficLight *trafficLight;
-    
+    Footpath *footPath;
     std::vector<Human*> citizens;
     std::vector<Child*> students;
+    std::vector<Doctor*> doctors;
+    std::vector<Vehicle*> vehicles;
     LightingSystem *streetLights[4];
     Cloud *clouds[2];
     

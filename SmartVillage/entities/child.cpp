@@ -11,21 +11,32 @@ Child::Child(float startX, float startY) {
     legAngle = 0.0f;
     jumpOffset = 0.0f;
     jumpTime = 0.0f;
+    isPlaying = false;
+    childScale = 0.7f;
+    isSitting = false;
 }
 
 void Child::update() {
-    posX += speed;
-    if (posX > 1.2f) posX = -1.2f;
+    if (isSitting) return;
 
-    jumpTime += 0.2f;
-    jumpOffset = fabsf(sin(jumpTime) * 0.05f); // Constant jumping
-    legAngle = sin(jumpTime * 1.5f) * 30.0f;
+    if (speed != 0.0f) {
+        posX += speed;
+        if (posX > maxX) posX = minX;
+        if (posX < minX) posX = maxX;
+
+        jumpTime += 0.2f;
+        jumpOffset = fabsf(sin(jumpTime) * 0.05f);
+        legAngle = sin(jumpTime * 1.5f) * 30.0f;
+    } else {
+        jumpOffset = 0.0f;
+        legAngle = 0.0f;
+    }
 }
 
 void Child::render() {
     glPushMatrix();
     glTranslatef(posX, posY + jumpOffset, 0.0f);
-    glScalef(0.7f, 0.7f, 1.0f); // 70% size of adult human
+    glScalef(childScale, childScale, 1.0f); 
 
     // Body (Red shirt)
     glColor3f(0.8f, 0.2f, 0.2f);
@@ -41,21 +52,33 @@ void Child::render() {
     fillMidpointCircle(0.0f, 0.17f, 0.035f);
 
     // Legs (Short pants)
-    glColor3f(0.1f, 0.4f, 0.1f);
-    
-    // Left leg
-    glPushMatrix();
-        glTranslatef(-0.015f, 0.05f, 0.0f);
-        glRotatef(legAngle, 0.0f, 0.0f, 1.0f);
-        drawBresenhamLine(0.0f, 0.0f, 0.0f, -0.07f);
-    glPopMatrix();
+    if (isSitting) {
+        glColor3f(0.1f, 0.4f, 0.1f);
+        glBegin(GL_POLYGON);
+            glVertex2f(-0.03f, 0.05f);
+            glVertex2f( 0.03f, 0.05f);
+            glVertex2f( 0.07f, -0.01f);
+            glVertex2f( 0.04f, -0.04f);
+            glVertex2f(-0.04f, -0.04f);
+            glVertex2f(-0.07f, -0.01f);
+        glEnd();
+    } else {
+        glColor3f(0.1f, 0.4f, 0.1f);
+        
+        // Left leg
+        glPushMatrix();
+            glTranslatef(-0.015f, 0.05f, 0.0f);
+            glRotatef(legAngle, 0.0f, 0.0f, 1.0f);
+            drawBresenhamLine(0.0f, 0.0f, 0.0f, -0.07f);
+        glPopMatrix();
 
-    // Right leg
-    glPushMatrix();
-        glTranslatef(0.015f, 0.05f, 0.0f);
-        glRotatef(-legAngle, 0.0f, 0.0f, 1.0f);
-        drawBresenhamLine(0.0f, 0.0f, 0.0f, -0.07f);
-    glPopMatrix();
+        // Right leg
+        glPushMatrix();
+            glTranslatef(0.015f, 0.05f, 0.0f);
+            glRotatef(-legAngle, 0.0f, 0.0f, 1.0f);
+            drawBresenhamLine(0.0f, 0.0f, 0.0f, -0.07f);
+        glPopMatrix();
+    }
 
     glPopMatrix();
 }

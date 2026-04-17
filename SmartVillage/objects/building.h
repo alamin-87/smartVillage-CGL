@@ -11,6 +11,7 @@ private:
     int numFloors;
     float bWidth;
     int bType; // 0=Office, 1=Apartment
+    bool windowStates[400];
 };
 
 #endif

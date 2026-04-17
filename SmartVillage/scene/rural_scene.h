@@ -1,6 +1,7 @@
 #ifndef RURAL_SCENE_H
 #define RURAL_SCENE_H
 #include "scene.h"
+#include <vector>
 #include "../objects/tree.h"
 #include "../objects/house.h"       
 #include "../objects/cowshed.h"
@@ -47,6 +48,11 @@ private:
     Human *mother;
     Child *child1;
     Child *child2;
+    Child *child3;
+    Child *child4;
+    Child *child5;
+    
+    std::vector<Child*> distantChildren;
 
     Cow *cow;
     Goat *goat;
@@ -63,5 +69,8 @@ private:
     void drawBushyTree(float x, float y);
     void drawPalmTree(float x, float y);
     void drawWoodenFence(float x, float y);
+    void drawMangoTree(float x, float y);
+    void drawSmallHouse(float x, float y);
+    void drawChildPark(float x, float y);
 };
 #endif

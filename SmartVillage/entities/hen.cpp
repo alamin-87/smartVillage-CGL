@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include "../algorithms/midpoint_circle.h"
 #include "../algorithms/bresenham.h"
+#include "../systems/sound_manager.h"
 
 Hen::Hen(float x, float y) {
     posX = x; posY = y;
@@ -11,6 +12,7 @@ Hen::Hen(float x, float y) {
 }
 
 void Hen::update() {
+    if (rand() % 800 == 0) SoundManager::getInstance().playHen();
     moveTime += 0.04f;
     peckTime += 0.15f;
     posX += sin(moveTime * 0.5f) * 0.001f;

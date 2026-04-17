@@ -7,6 +7,9 @@
 Building::Building(float x, float y, int floors, float width, int type) {
     posX = x; posY = y;
     numFloors = floors; bWidth = width; bType = type;
+    for (int i = 0; i < 400; i++) {
+        windowStates[i] = (rand() % 3 != 0); // 66% on at night
+    }
 }
 
 void Building::render(bool isNight) {
@@ -43,9 +46,11 @@ void Building::render(bool isNight) {
         for (int c = 0; c < cols; c++) {
             float wx = 0.02f + c * 0.06f;
             float wy = 0.04f + f * 0.15f;
+            int idx = f * cols + c;
+            if (idx >= 400) idx = 399; // Prevent out of bounds
 
             // Window light logic
-            bool windowOn = isNight && (rand() % 3 != 0); // 66% on at night
+            bool windowOn = isNight && windowStates[idx];
             
             if (windowOn) {
                 if (bType == 0) glColor3f(0.9f, 0.9f, 1.0f); // Cool white for office

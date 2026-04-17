@@ -8,11 +8,17 @@
 School::School(float x, float y) {
     posX = x; posY = y;
     flagWave = 0.0f; bellRinging = false;
+    ballX = 0.0f; ballY = -0.125f; ballAngle = 0.0f;
 }
 
 void School::update(float hour) {
     flagWave += 0.1f;
     bellRinging = (((int)hour == 8) || ((int)hour == 12) || ((int)hour == 15));
+    
+    // Football animation (rolling/bouncing)
+    ballAngle += 5.0f;
+    ballX = sin(flagWave * 0.5f) * 0.15f; // Roll left and right
+    ballY = -0.125f + fabsf(sin(flagWave * 2.0f)) * 0.02f; // Slight bounce
 }
 
 void School::render(bool isNight) {
@@ -135,30 +141,19 @@ void School::drawFlag() {
 
     // Flag (waving using sine)
     float wave = sin(flagWave) * 0.01f;
-    // Green stripe
-    glColor3f(0.0f, 0.5f, 0.15f);
+    
+    // Green base (Bangladesh flag)
+    glColor3f(0.0f, 0.4f, 0.2f);
     glBegin(GL_QUADS);
-        glVertex2f(-0.28f, 0.43f);
-        glVertex2f(-0.18f + wave, 0.43f);
-        glVertex2f(-0.18f + wave, 0.45f);
+        glVertex2f(-0.28f, 0.35f);
+        glVertex2f(-0.16f + wave, 0.35f);
+        glVertex2f(-0.16f + wave, 0.45f);
         glVertex2f(-0.28f, 0.45f);
     glEnd();
-    // White stripe
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glBegin(GL_QUADS);
-        glVertex2f(-0.28f, 0.41f);
-        glVertex2f(-0.18f + wave, 0.41f);
-        glVertex2f(-0.18f + wave, 0.43f);
-        glVertex2f(-0.28f, 0.43f);
-    glEnd();
-    // Saffron stripe
-    glColor3f(1.0f, 0.6f, 0.15f);
-    glBegin(GL_QUADS);
-        glVertex2f(-0.28f, 0.39f);
-        glVertex2f(-0.18f + wave, 0.39f);
-        glVertex2f(-0.18f + wave, 0.41f);
-        glVertex2f(-0.28f, 0.41f);
-    glEnd();
+    
+    // Red circle
+    glColor3f(0.85f, 0.15f, 0.15f);
+    fillMidpointCircle(-0.23f + wave * 0.5f, 0.4f, 0.025f);
 }
 
 void School::drawField() {
@@ -187,6 +182,25 @@ void School::drawField() {
     drawBresenhamLine(-0.24f, -0.10f, -0.22f, -0.10f);
     drawBresenhamLine(-0.24f, -0.15f, -0.22f, -0.15f);
     drawBresenhamLine( 0.24f, -0.10f,  0.24f, -0.15f);
-    drawBresenhamLine( 0.24f, -0.10f,  0.22f, -0.10f);
     drawBresenhamLine( 0.24f, -0.15f,  0.22f, -0.15f);
+
+    // Improved Football Drawing
+    glPushMatrix();
+    glTranslatef(ballX, ballY, 0.0f);
+    glRotatef(ballAngle, 0.0f, 0.0f, 1.0f);
+
+    // Ball Body
+    glColor3f(1.0f, 1.0f, 1.0f);
+    fillMidpointCircle(0.0f, 0.0f, 0.015f);
+    
+    // Better Football Pattern (Hexagon-like spots)
+    glColor3f(0.1f, 0.1f, 0.1f);
+    // Center spot
+    fillMidpointCircle(0.0f, 0.0f, 0.006f);
+    // Surround spots
+    for(int i=0; i<5; i++) {
+        float ang = i * (360.0f/5.0f) * 3.14159f / 180.0f;
+        fillMidpointCircle(cos(ang) * 0.01f, sin(ang) * 0.01f, 0.004f);
+    }
+    glPopMatrix();
 }

@@ -17,6 +17,7 @@ private:
     Alamin* alamin;
     HUD hud;
 
+    int currentSceneId;
     float cameraX;
     float globalTime;
     bool isNight;
@@ -34,6 +35,8 @@ public:
 
     // Getters for shared state
     void setTargetDestination(int dest);
+    Alamin* getAlamin() { return alamin; }
+    float getGlobalTime() const { return globalTime; }
 };
 
 #endif

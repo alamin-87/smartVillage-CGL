@@ -3,20 +3,32 @@
 #include <cmath>
 #include "../algorithms/midpoint_circle.h"
 #include "../algorithms/bresenham.h"
+#include "../systems/sound_manager.h"
 
 Cow::Cow(float x, float y) {
     posX = x; posY = y; baseX = x;
     moveTime = 0.0f; tailSwing = 0.0f; headBob = 0.0f;
-    inShed = false;
+    inShed = false; eating = false; eatingTimer = 0.0f;
 }
 
 void Cow::update(bool isNight) {
-    moveTime += 0.02f;
-    tailSwing = sin(moveTime * 3.0f) * 15.0f;
-    headBob = sin(moveTime * 2.0f) * 0.01f;
     inShed = isNight;
     if (!inShed) {
-        posX = baseX + sin(moveTime * 0.5f) * 0.15f;
+        if (rand() % 3000 == 0) SoundManager::getInstance().playCow();
+        if (!eating && rand() % 200 == 0) eating = true;
+        if (eating) {
+            eatingTimer += 0.05f;
+            headBob = -0.06f + sin(eatingTimer * 8.0f) * 0.01f;
+            if (eatingTimer > 6.0f) {
+                eating = false;
+                eatingTimer = 0.0f;
+            }
+        } else {
+            moveTime += 0.02f;
+            headBob = sin(moveTime * 2.0f) * 0.01f;
+            posX = baseX + sin(moveTime * 0.5f) * 0.15f;
+        }
+        tailSwing = sin(moveTime * 3.0f) * 15.0f;
     }
 }
 
@@ -37,52 +49,58 @@ void Cow::render() {
     fillMidpointCircle(0.03f, 0.04f, 0.012f);
     fillMidpointCircle(-0.01f, 0.02f, 0.01f);
 
-    // Legs (Solid Quads)
+    // Legs (Realistic tapered polygons with joints)
+    // Back right (background)
+    glColor3f(0.6f, 0.55f, 0.45f); // Darker shading
+    glBegin(GL_POLYGON);
+        glVertex2f(-0.01f, 0.02f); glVertex2f(-0.04f, 0.02f);
+        glVertex2f(-0.045f, -0.02f); glVertex2f(-0.035f, -0.06f);
+        glVertex2f(-0.02f, -0.06f); glVertex2f(-0.025f, -0.02f);
+    glEnd();
+    
+    // Front right (background)
+    glBegin(GL_POLYGON);
+        glVertex2f(0.05f, 0.02f);   glVertex2f(0.02f, 0.02f);
+        glVertex2f(0.02f, -0.02f);  glVertex2f(0.025f, -0.06f);
+        glVertex2f(0.04f, -0.06f);  glVertex2f(0.045f, -0.02f);
+    glEnd();
+
+    // Back left (foreground)
     glColor3f(0.7f, 0.65f, 0.55f);
-    float legW = 0.01f;
-    // Back left
-    glBegin(GL_QUADS);
-        glVertex2f(-0.06f-legW, 0.02f); glVertex2f(-0.06f+legW, 0.02f);
-        glVertex2f(-0.06f+legW, -0.06f); glVertex2f(-0.06f-legW, -0.06f);
+    glBegin(GL_POLYGON);
+        glVertex2f(-0.04f, 0.02f); glVertex2f(-0.08f, 0.02f);
+        glVertex2f(-0.085f, -0.02f); glVertex2f(-0.065f, -0.06f);
+        glVertex2f(-0.05f, -0.06f); glVertex2f(-0.055f, -0.02f);
     glEnd();
-    // Back right
-    glColor3f(0.6f, 0.55f, 0.45f); // Darker shading for back legs
-    glBegin(GL_QUADS);
-        glVertex2f(-0.03f-legW, 0.02f); glVertex2f(-0.03f+legW, 0.02f);
-        glVertex2f(-0.03f+legW, -0.06f); glVertex2f(-0.03f-legW, -0.06f);
-    glEnd();
-    // Front left
-    glColor3f(0.7f, 0.65f, 0.55f);
-    glBegin(GL_QUADS);
-        glVertex2f( 0.06f-legW, 0.02f); glVertex2f( 0.06f+legW, 0.02f);
-        glVertex2f( 0.06f+legW, -0.06f); glVertex2f( 0.06f-legW, -0.06f);
-    glEnd();
-    // Front right
-    glColor3f(0.6f, 0.55f, 0.45f);
-    glBegin(GL_QUADS);
-        glVertex2f( 0.03f-legW, 0.02f); glVertex2f( 0.03f+legW, 0.02f);
-        glVertex2f( 0.03f+legW, -0.06f); glVertex2f( 0.03f-legW, -0.06f);
+
+    // Front left (foreground)
+    glBegin(GL_POLYGON);
+        glVertex2f(0.08f, 0.02f);   glVertex2f(0.04f, 0.02f);
+        glVertex2f(0.04f, -0.02f);  glVertex2f(0.055f, -0.06f);
+        glVertex2f(0.07f, -0.06f);  glVertex2f(0.075f, -0.02f);
     glEnd();
 
     // Hooves
     glColor3f(0.1f, 0.1f, 0.1f);
     glBegin(GL_QUADS);
-        glVertex2f(-0.07f, -0.06f); glVertex2f(-0.05f, -0.06f);
-        glVertex2f(-0.05f, -0.07f); glVertex2f(-0.07f, -0.07f);
-        // ...
-        glVertex2f(-0.04f, -0.06f); glVertex2f(-0.02f, -0.06f);
-        glVertex2f(-0.02f, -0.07f); glVertex2f(-0.04f, -0.07f);
-        // ...
-        glVertex2f(0.05f, -0.06f); glVertex2f(0.07f, -0.06f);
-        glVertex2f(0.07f, -0.07f); glVertex2f(0.05f, -0.07f);
-        // ...
-        glVertex2f(0.02f, -0.06f); glVertex2f(0.04f, -0.06f);
-        glVertex2f(0.04f, -0.07f); glVertex2f(0.02f, -0.07f);
+        // Back right
+        glVertex2f(-0.035f, -0.06f); glVertex2f(-0.015f, -0.06f);
+        glVertex2f(-0.015f, -0.07f); glVertex2f(-0.035f, -0.07f);
+        // Front right
+        glVertex2f(0.025f, -0.06f);  glVertex2f(0.045f, -0.06f);
+        glVertex2f(0.045f, -0.07f);  glVertex2f(0.025f, -0.07f);
+        // Back left
+        glVertex2f(-0.065f, -0.06f); glVertex2f(-0.045f, -0.06f);
+        glVertex2f(-0.045f, -0.07f); glVertex2f(-0.065f, -0.07f);
+        // Front left
+        glVertex2f(0.055f, -0.06f);  glVertex2f(0.075f, -0.06f);
+        glVertex2f(0.075f, -0.07f);  glVertex2f(0.055f, -0.07f);
     glEnd();
 
     // Head (solid circle + bob)
     glPushMatrix();
     glTranslatef(0.1f, 0.06f + headBob, 0.0f);
+    if (eating) glRotatef(-45.0f, 0.0f, 0.0f, 1.0f);
     glColor3f(0.8f, 0.75f, 0.65f);
     fillMidpointCircle(0.0f, 0.0f, 0.025f);
     // Snout

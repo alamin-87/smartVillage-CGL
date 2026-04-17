@@ -12,10 +12,19 @@
 #include "../entities/human.h"
 #include "../entities/child.h"
 #include "../entities/fish.h"
+#include "../entities/goat.h"
+#include "../entities/hen.h"
 #include "../objects/cloud.h"
 #include "../objects/road.h"
+#include "../objects/yacht.h"
 #include "../ui/hud.h"
 #include <vector>
+
+struct Star {
+    float x, y;
+    float size;
+    float phase;
+};
 
 class VillageScene : public Scene {
 public:
@@ -46,6 +55,7 @@ private:
     River river;
     Market *market;
     Boat *boats[2];
+    Yacht *yacht;
 
     RainEffect *rain;
     StormEffect *storm;
@@ -54,9 +64,15 @@ private:
     std::vector<Human*> villagers;
     std::vector<Human*> shopkeepers;
     std::vector<Child*> children;
+    std::vector<Child*> parkChildren;
+    std::vector<Child*> distantChildren;
     std::vector<Fish*> schoolOfFish;
     
+    std::vector<Goat*> goats;
+    std::vector<Hen*> hens;
+    
     Cloud *clouds[3];
+    std::vector<Star> stars;
     HUD hud;
 
     bool isRainy, isStormy, isWindy;
@@ -71,5 +87,6 @@ private:
     void drawCoconutTree(float x, float y);
     void drawJackfruitTree(float x, float y);
     void drawMarketShop(float x, float y, float r, float g, float b);
+    void drawChildPark(float cx, float cy);
 };
 #endif

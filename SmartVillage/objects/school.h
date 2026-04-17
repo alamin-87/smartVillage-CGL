@@ -8,6 +8,7 @@ public:
 private:
     float posX, posY;
     float flagWave;
+    float ballX, ballY, ballAngle;
     bool bellRinging;
     void drawFlag();
     void drawField();

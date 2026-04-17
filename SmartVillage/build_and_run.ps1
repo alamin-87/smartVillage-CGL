@@ -20,7 +20,7 @@ Write-Host "Compiling project..."
 g++ $cppFiles -o SmartVillage.exe `
     -I"$INCLUDE_PATH" `
     -L"$LIB_PATH" `
-    -lfreeglut -lopengl32 -lglu32
+    -lfreeglut -lopengl32 -lglu32 -lwinmm
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host "Compilation successful! Running SmartVillage.exe..."

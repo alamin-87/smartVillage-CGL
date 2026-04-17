@@ -12,7 +12,9 @@ private:
     float moveTime;
     float tailSwing;
     float headBob;
+    float eatingTimer;
     bool inShed;
+    bool eating;
 };
 
 #endif

@@ -14,7 +14,8 @@ Boat::Boat(float x, float y) {
 void Boat::update() {
     swayAngle += 0.05f;
     posX += speed;
-    if (posX > 1.3f) posX = -1.3f;
+    if (posX > maxX) posX = minX;
+    if (posX < minX) posX = maxX;
 }
 
 void Boat::render(bool isNight) {
@@ -65,11 +66,6 @@ void Boat::render(bool isNight) {
         fillMidpointCircle(-0.04f, 0.02f, 0.015f);
         glDisable(GL_BLEND);
     }
-
-    // Ripple rings around boat
-    glColor3f(0.3f, 0.6f, 1.0f);
-    float rippleR = 0.1f + sin(swayAngle * 0.5f) * 0.02f;
-    fillMidpointCircle(0.0f, -0.03f, rippleR);
 
     glPopMatrix();
 }

@@ -7,7 +7,7 @@ public:
     void render();
 private:
     float posX, posY, baseY;
-    float moveTime, hopTimer;
-    bool hopping;
+    float moveTime, hopTimer, eatingTimer;
+    bool hopping, eating;
 };
 #endif

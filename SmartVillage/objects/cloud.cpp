@@ -16,8 +16,8 @@ void Cloud::update(bool isWindy, bool isStormy) {
     else if (isWindy) currentSpeed *= 5.0f;
 
     posX += currentSpeed;
-    if (posX > 1.3f) {
-        posX = -1.3f;
+    if (posX > maxX) {
+        posX = minX;
     }
 }
 
