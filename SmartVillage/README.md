@@ -1,45 +1,78 @@
 # 🏡 SmartVillage: Computer Graphics Laboratory Project
 
-Welcome to the **SmartVillage** repository! This is a comprehensive 2D/3D graphics application built from scratch in C++ for the 8th Semester Computer Graphics Laboratory (CGL). 
+![Project Banner](https://img.shields.io/badge/CGL-Project-EB4034?style=for-the-badge&logo=opengl&logoColor=white)
+![Language](https://img.shields.io/badge/Language-C%2B%2B-00599C?style=for-the-badge&logo=cplusplus&logoColor=white)
+![Platform](https://img.shields.io/badge/Platform-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
 
-The goal of this project is to simulate a dynamic, living smart village by integrating core graphics implementations with custom logic systems (such as environment and dynamic movements).
+Welcome to **SmartVillage**, a state-of-the-art 2D Computer Graphics simulation built for the 8th Semester Computer Graphics Laboratory (CGL). This project demonstrates the intersection of traditional rasterization algorithms with modern object-oriented engine architecture to create a living, breathing digital environment.
 
-## 🌟 Project Overview
+---
 
-**SmartVillage** isn't just static objects painted on a screen; it's a living environment. The project aims to implement advanced and interactive rendering features—animated weather, day/night cycles, ambient lighting, and smart energy tracking. 
+## 🌟 Key Features
 
-Crucially, **to meet the academic requirements of the CGL course**, this project implements foundational rasterization algorithms (like DDA and Bresenham's) from scratch in order to construct the scenes.
+### 🔊 Dynamic Atmospheric Sound System
+Integrated with the **Windows Media Control Interface (MCI)**, SmartVillage features a weather-responsive audio engine:
+- 👋 **Real-time Weather Audio**: Ambient rain, storm, and wind sound loops that sync with visual effects.
+- 🐄 **Life-like Entity Sounds**: Directional and event-based sounds for cows, goats, and hens.
 
-## ✨ Key Features
-- **Multi-Scene Support:** Switch between **Main Village**, **Rural Homestead**, and **Urban District**.
-- **Dynamic Weather System:** Real-time simulations of rain, storm, and wind effects acting upon the environment.
-- **Day/Night Cycle:** Smooth color shifting and ambient transitions between daytime, twilight, and night.
-- **Smart Infrastructure:** Automated lighting grids and building energy analysis representing a modern "Smart" ecosystem.
-- **Living Entities:** Independent logic for moving adults, children, and animals updating in real-time.
-- **Premium HUD Interface:** Real-time on-screen data displaying smart stats, environment status, and simulation variables.
+### 🌤️ Environment & Weather Engine
+- **Day/Night Cycle**: A smooth 360-degree solar orbit that transitions the world between dawn, midday, twilight, and deep night.
+- **Dynamic Skybox**: Color-shifting gradients reflecting atmospheric scattering.
+- **Particle Systems**: Custom weather effects including rain, storms, and wind-driven cloud movements.
+- **Natural Lighting**: Hand-calculated shadows and ambient shifts based on sun/moon position.
 
-## 📂 Architecture and Directory Structure
+### 🔋 Smart Logic Systems
+- **Energy Grid Tracking**: A real-time monitoring system calculating solar generation vs. community power load.
+- **Automated Lighting**: Solar-sensing streetlights that activate automatically at dusk.
+- **Smart Infrastructure**: Functional hospital emergency lighting, educational center state tracking, and building HVAC simulations.
 
-The project has been scaled with an organized, engine-like architecture:
+---
 
-- **`app/`**: High-level application loops and scene management logic.
-- **`core/`**: The core application foundation including rendering hooks, input processing, and delta-time management.
-- **`scene/`**: Different simulation environments (Village, Rural, Urban).
-- **`objects/`**: Implements static drawable environment pieces (Houses, Trees, Rivers, Roads, Bridges).
-- **`entities/`**: Represents moving, interactive components (Humans, Children, Animals).
-- **`systems/`**: Logic handlers acting upon the world states.
-- **`smart/`**: Code dedicated to the "Smart" logic (Grid automation, Lighting).
-- **`effects/`**: Visual overlays (Particle-based weather).
-- **`ui/`**: Specialized on-screen overlays and HUD.
-- **`algorithms/`**: **Academic implementations.** DDA, Bresenham, and Midpoint Circle algorithms.
+## 🗺️ Scene Overviews
+
+SmartVillage features three distinct, strictly decoupled environments:
+
+1. **Main Village (1)**: The heart of the simulation featuring a bustling market, a detailed child park (with animated swings, slides, and merry-go-rounds), and a flowing river with dynamic ripples and aquatic life.
+2. **Rural Homestead (2)**: A serene landscape focusing on agriculture, featuring crop-rotation farmlands, traditional mud houses, and livestock management.
+3. **Urban District (3)**: A modern smart-city expansion with high-rise buildings, automated traffic control systems, hospitals, and educational institutions.
+
+---
+
+## 🕹️ Controls
+
+| Key | Action |
+| :--- | :--- |
+| **`1`** | Switch to **Main Village** |
+| **`2`** | Switch to **Rural Homestead** |
+| **`3`** | Switch to **Urban District** |
+| **`D` / `N`** | Force **Day** / **Night** Mode |
+| **`R` / `S` / `W`** | Toggle **Rain** / **Storm** / **Wind** |
+| **`ESC`** | Exit Simulation |
+
+---
+
+## 🏗️ Technical Architecture
+
+The project follows a modular, engine-like directory structure:
+
+- **`algorithms/`**: 🧪 Foundation layer implementing **Bresenham's**, **DDA**, and **Midpoint Circle** from scratch.
+- **`app/`**: 🎮 Application state and high-level scene management.
+- **`core/`**: ⚙️ Rendering hooks, input processing, and delta-time management.
+- **`entities/`**: 🚶 Living components (Humans, Animals, Fish) with independent AI states.
+- **`systems/`**: 🛠️ Global logic handlers (Day/Night, Weather, SoundManager).
+- **`smart/`**: 💡 Logic dedicated to the "Smart" ecosystem (EnergyGrid, Automated Lighting).
+- **`objects/`**: 🏘️ Static environment pieces (Houses, Bridges, Roads, Markets).
+
+---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- C++ Compiler (GCC / MinGW / MSVC)
-- Graphics Library (FreeGLUT)
+- **Compiler**: GCC / MinGW (supporting C++17 or higher)
+- **Dependencies**: freeglut, OpenGL, WinMM (for audio)
 
 ### Building & Running
+The project includes a PowerShell build script that handles recursive compilation and library linking:
 
 1. Open PowerShell in the project directory.
 2. Run the build script:
@@ -47,17 +80,22 @@ The project has been scaled with an organized, engine-like architecture:
    .\build_and_run.ps1
    ```
 
-### 🕹️ Controls
+---
 
-- **1**: Switch to **Main Village Scene**
-- **2**: Switch to **Rural Homestead Scene**
-- **3**: Switch to **Urban District Scene**
-- **D**: Force **Day Mode**
-- **N**: Force **Night Mode**
-- **R**: Toggle **Rain Mode**
-- **S**: Toggle **Storm Mode**
-- **W**: Toggle **Wind Mode**
-- **ESC**: Exit Simulation
+## 📂 File Structure
+```text
+SmartVillage/
+├── algorithms/      # Core rasterization implementations
+├── app/             # Application lifecycle
+├── assets/          # Sprites and textures
+├── config/          # Project constants and defines
+├── entities/        # Interactive NPCs and animals
+├── media/           # Sound files (.mp3)
+├── objects/         # Static environment assets
+├── scene/           # Scene-specific logic
+├── systems/         # Global managers (Sound, Time, Weather)
+└── main.cpp         # Entry point
+```
 
 ---
-*Developed for 8th Semester CGL.*
+*Developed for the 8th Semester Computer Graphics Laboratory.*
