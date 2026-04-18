@@ -16,6 +16,7 @@
 #include "../effects/storm_effect.h"
 #include "../objects/footpath.h"
 #include "../objects/vehicle.h"
+#include "../entities/bird.h"
 #include <vector>
 
 class UrbanScene : public Scene {
@@ -41,7 +42,6 @@ private:
     Hospital *hospital;
     Building *buildings[3];
     Road *mainRoad;
-    TrafficLight *trafficLight;
     Footpath *footPath;
     std::vector<Human*> citizens;
     std::vector<Child*> students;
@@ -49,6 +49,7 @@ private:
     std::vector<Vehicle*> vehicles;
     LightingSystem *streetLights[4];
     Cloud *clouds[2];
+    std::vector<Bird*> birds;
     
     RainEffect *rain;
     StormEffect *storm;

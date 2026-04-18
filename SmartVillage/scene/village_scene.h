@@ -18,6 +18,7 @@
 #include "../objects/road.h"
 #include "../objects/yacht.h"
 #include "../ui/hud.h"
+#include "../entities/bird.h"
 #include <vector>
 
 struct Star {
@@ -72,6 +73,7 @@ private:
     std::vector<Hen*> hens;
     
     Cloud *clouds[3];
+    std::vector<Bird*> birds;
     std::vector<Star> stars;
     HUD hud;
 

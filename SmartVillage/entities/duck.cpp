@@ -3,6 +3,7 @@
 #include <cmath>
 #include "../algorithms/midpoint_circle.h"
 #include "../algorithms/bresenham.h"
+#include "../systems/sound_manager.h"
 
 Duck::Duck(float x, float y) {
     posX = x; posY = y;
@@ -10,6 +11,7 @@ Duck::Duck(float x, float y) {
 }
 
 void Duck::update() {
+    if (rand() % 1500 == 0) SoundManager::getInstance().playDuck();
     waddleTime += 0.08f;
     posX += 0.001f;
     if (posX > 0.8f) posX = -0.8f;

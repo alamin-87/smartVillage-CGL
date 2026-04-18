@@ -166,6 +166,10 @@ void Application::handleInput(unsigned char key) {
             else SoundManager::getInstance().stopWind();
             break;
             
+        case 'c': 
+            if (SoundManager::getInstance().isChildPlaying()) SoundManager::getInstance().stopChild();
+            else SoundManager::getInstance().playChild();
+            break;
         case 27: exit(0); break; // ESC to quit
     }
 }

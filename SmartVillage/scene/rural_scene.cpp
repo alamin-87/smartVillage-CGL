@@ -25,37 +25,49 @@ void RuralScene::init() {
 
     // Children playing in the rural park
     // Child 1 on left swing
-    child1 = new Child(-0.52f, -0.47f);
+    child1 = new Child(-0.52f, -0.47f, 0);
     child1->setSpeed(0.0f); child1->setPlaying(true); child1->setChildScale(0.45f);
 
     // Child 2 on right swing
-    child2 = new Child(-0.435f, -0.47f);
+    child2 = new Child(-0.435f, -0.47f, 1);
     child2->setSpeed(0.0f); child2->setPlaying(true); child2->setChildScale(0.45f);
 
     // Child 3 on slide
-    child3 = new Child(-0.84f, -0.36f);
+    child3 = new Child(-0.84f, -0.36f, 2);
     child3->setSpeed(0.0f); child3->setPlaying(true); child3->setChildScale(0.45f);
 
     // Child 4 walking playfully
-    child4 = new Child(-0.6f, -0.6f);
+    child4 = new Child(-0.6f, -0.6f, 3);
     child4->setSpeed(0.003f); child4->setBounds(-0.9f, -0.2f);
     
     // Child 5 watching duck
-    child5 = new Child(0.65f, -0.75f);
+    child5 = new Child(0.65f, -0.75f, 0);
     child5->setSpeed(0.0f);
 
     // Distant children running/playing in the background farmlands (4-5 kids)
-    Child* dc1 = new Child(-0.35f, 0.08f); dc1->setChildScale(0.25f); dc1->setSpeed(0.001f); dc1->setBounds(-0.45f, -0.2f); dc1->setPlaying(true);
-    Child* dc2 = new Child(-0.25f, 0.08f); dc2->setChildScale(0.25f); dc2->setSpeed(0.0f); dc2->setPlaying(true);
-    Child* dc3 = new Child(0.25f, 0.05f);  dc3->setChildScale(0.3f);  dc3->setSpeed(0.002f);  dc3->setBounds(-0.2f, 0.45f); dc3->setPlaying(true);
-    Child* dc4 = new Child(-0.75f, 0.12f); dc4->setChildScale(0.2f);  dc4->setSpeed(0.0015f); dc4->setBounds(-0.9f, -0.6f); dc4->setPlaying(true);
-    Child* dc5 = new Child(-0.05f, 0.15f); dc5->setChildScale(0.2f);  dc5->setSpeed(0.0f);    dc5->setPlaying(true);
+    Child* dc1 = new Child(-0.35f, 0.08f, 1); dc1->setChildScale(0.25f); dc1->setSpeed(0.001f); dc1->setBounds(-0.45f, -0.2f); dc1->setPlaying(true);
+    Child* dc2 = new Child(-0.25f, 0.08f, 2); dc2->setChildScale(0.25f); dc2->setSpeed(0.0f); dc2->setPlaying(true);
+    Child* dc3 = new Child(0.25f, 0.05f, 3);  dc3->setChildScale(0.3f);  dc3->setSpeed(0.002f);  dc3->setBounds(-0.2f, 0.45f); dc3->setPlaying(true);
+    Child* dc4 = new Child(-0.75f, 0.12f, 0); dc4->setChildScale(0.2f);  dc4->setSpeed(0.0015f); dc4->setBounds(-0.9f, -0.6f); dc4->setPlaying(true);
+    Child* dc5 = new Child(-0.05f, 0.15f, 1); dc5->setChildScale(0.2f);  dc5->setSpeed(0.0f);    dc5->setPlaying(true);
 
     distantChildren.push_back(dc1);
     distantChildren.push_back(dc2);
     distantChildren.push_back(dc3);
     distantChildren.push_back(dc4);
     distantChildren.push_back(dc5);
+
+    clouds[0] = new Cloud(-0.4f, 0.7f, 1.0f);
+    clouds[1] = new Cloud( 0.4f, 0.8f, 1.2f);
+    clouds[2] = new Cloud( 0.0f, 0.6f, 0.8f);
+
+    // Flock of flying birds
+    for(int i=0; i<5; i++) {
+        birds.push_back(new Bird(-0.5f + i*0.12f, 0.75f + (i%2)*0.03f, true));
+    }
+    // Sitting birds in trees
+    birds.push_back(new Bird(-0.7f, 0.15f, false)); // On mango tree
+    birds.push_back(new Bird(0.35f, 0.12f, false)); // On another tree
 
     cow = new Cow(0.5f, -0.4f);
     goat = new Goat(0.6f, -0.55f);
@@ -72,6 +84,7 @@ void RuralScene::init() {
 
 RuralScene::~RuralScene() {
     for(int i=0; i<3; i++) delete clouds[i];
+    for(auto b : birds) delete b;
     delete father; delete mother; delete child1; delete child2;
     delete child3; delete child4; delete child5;
     for(auto dc : distantChildren) delete dc;
@@ -90,6 +103,7 @@ void RuralScene::update() {
     child1->update(); child2->update();
     child3->update(); child4->update(); child5->update();
     for(auto dc : distantChildren) dc->update();
+    for(auto b : birds) b->update();
     cow->update(isNight); goat->update(); duck->update(); hen->update();
 
     if (isRainy || isStormy) rain->update();
@@ -100,6 +114,7 @@ void RuralScene::render() {
     drawFields();
 
     for(int i=0; i<3; i++) clouds[i]->render();
+    for(auto b : birds) b->render();
     
     // Distant background children
     for(auto dc : distantChildren) dc->render();

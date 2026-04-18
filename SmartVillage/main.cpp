@@ -1,5 +1,7 @@
 #include <GL/glut.h>
 #include "app/application.h"
+#include <ctime>
+#include <cstdlib>
 
 // Window size
 int WIDTH = 1000;
@@ -43,6 +45,7 @@ int main(int argc, char** argv) {
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
     glutInitWindowSize(WIDTH, HEIGHT);
     glutCreateWindow("Smart Village Simulation");
+    srand(time(NULL));
 
     init();
 

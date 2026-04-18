@@ -19,6 +19,11 @@ public:
     void playCow();
     void playGoat();
     void playHen();
+    void playBird();
+    void playChild();
+    void playDuck();
+    void stopChild();
+    bool isChildPlaying() const { return childPlaying; }
 
 private:
     SoundManager();
@@ -29,6 +34,7 @@ private:
     bool rainPlaying;
     bool stormPlaying;
     bool windPlaying;
+    bool childPlaying;
 };
 
 #endif

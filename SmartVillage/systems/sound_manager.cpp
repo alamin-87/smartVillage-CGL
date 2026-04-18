@@ -5,12 +5,13 @@
 
 #pragma comment(lib, "winmm.lib")
 
-SoundManager::SoundManager() : rainPlaying(false), stormPlaying(false), windPlaying(false) {}
+SoundManager::SoundManager() : rainPlaying(false), stormPlaying(false), windPlaying(false), childPlaying(false) {}
 
 SoundManager::~SoundManager() {
     stopRain();
     stopStorm();
     stopWind();
+    stopChild();
 }
 
 SoundManager& SoundManager::getInstance() {
@@ -76,6 +77,7 @@ void SoundManager::playCow() {
         sendCmd("open \"media/sounds/cow.mp3\" type mpegvideo alias cow_sound");
         opened = true;
     }
+    sendCmd("stop cow_sound");
     sendCmd("play cow_sound from 0");
 }
 
@@ -85,6 +87,7 @@ void SoundManager::playGoat() {
         sendCmd("open \"media/sounds/goat.mp3\" type mpegvideo alias goat_sound");
         opened = true;
     }
+    sendCmd("stop goat_sound");
     sendCmd("play goat_sound from 0");
 }
 
@@ -94,5 +97,40 @@ void SoundManager::playHen() {
         sendCmd("open \"media/sounds/hen.mp3\" type mpegvideo alias hen_sound");
         opened = true;
     }
+    sendCmd("stop hen_sound");
     sendCmd("play hen_sound from 0");
+}
+
+void SoundManager::playBird() {
+    static bool opened = false;
+    if (!opened) {
+        sendCmd("open \"media/sounds/bird.mp3\" type mpegvideo alias bird_sound");
+        opened = true;
+    }
+    sendCmd("stop bird_sound");
+    sendCmd("play bird_sound from 0");
+}
+
+void SoundManager::playChild() {
+    if (childPlaying) return;
+    sendCmd("open \"media/sounds/child.mp3\" type mpegvideo alias child_sound");
+    sendCmd("play child_sound repeat");
+    childPlaying = true;
+}
+
+void SoundManager::stopChild() {
+    if (!childPlaying) return;
+    sendCmd("stop child_sound");
+    sendCmd("close child_sound");
+    childPlaying = false;
+}
+
+void SoundManager::playDuck() {
+    static bool opened = false;
+    if (!opened) {
+        sendCmd("open \"media/sounds/duck.mp3\" type mpegvideo alias duck_sound");
+        opened = true;
+    }
+    sendCmd("stop duck_sound");
+    sendCmd("play duck_sound from 0");
 }

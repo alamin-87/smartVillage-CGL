@@ -13,7 +13,7 @@ Goat::Goat(float x, float y) {
 }
 
 void Goat::update() {
-    if (rand() % 1500 == 0) SoundManager::getInstance().playGoat();
+    if (rand() % 600 == 0) SoundManager::getInstance().playGoat(); // Increased frequency
     if (!hopping && !eating && rand() % 200 == 0) eating = true;
     
     if (eating) {

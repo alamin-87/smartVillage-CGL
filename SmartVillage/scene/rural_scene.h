@@ -14,6 +14,7 @@
 #include "../entities/goat.h"
 #include "../entities/duck.h"
 #include "../entities/hen.h"
+#include "../entities/bird.h"
 #include "../ui/hud.h"
 #include "../effects/rain_effect.h"
 #include "../effects/storm_effect.h"
@@ -43,6 +44,7 @@ private:
     WaterPump *pump;
     Pole *pole;
     Cloud *clouds[3];
+    std::vector<Bird*> birds;
 
     Human *father;
     Human *mother;

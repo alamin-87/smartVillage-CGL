@@ -14,7 +14,7 @@ Cow::Cow(float x, float y) {
 void Cow::update(bool isNight) {
     inShed = isNight;
     if (!inShed) {
-        if (rand() % 3000 == 0) SoundManager::getInstance().playCow();
+        if (rand() % 800 == 0) SoundManager::getInstance().playCow(); // Increased frequency
         if (!eating && rand() % 200 == 0) eating = true;
         if (eating) {
             eatingTimer += 0.05f;

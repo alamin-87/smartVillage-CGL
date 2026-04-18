@@ -53,13 +53,13 @@ void VillageScene::init() {
     for(int i=0; i<3; i++) {
         villagers.push_back(new Human(-5.0f + i*5.0f, -0.52f));
     }
-    children.push_back(new Child(1.0f, -0.55f)); 
-    children.push_back(new Child(-2.0f, -0.48f));
+    children.push_back(new Child(1.0f, -0.55f, 0)); 
+    children.push_back(new Child(-2.0f, -0.48f, 1));
 
     // Children exactly positioned on park equipment: Left Swing, Right Swing, Seesaw Left, Seesaw Right, Slide Platform (Adjusted for smaller scale)
     float parkKids[][2] = {{-0.72f, -0.24f}, {-0.64f, -0.24f}, {-0.575f, -0.28f}, {-0.465f, -0.28f}, {-0.28f, -0.145f}};
     for(int i = 0; i < 5; i++) {
-        Child* kid = new Child(parkKids[i][0], parkKids[i][1]);
+        Child* kid = new Child(parkKids[i][0], parkKids[i][1], i % 4);
         kid->setSpeed(0.0f);
         kid->setPlaying(true);
         kid->setChildScale(0.45f); // Make park children smaller to fit the park
@@ -67,20 +67,20 @@ void VillageScene::init() {
     }
 
     // Children playing in the far distance
-    Child* dc1 = new Child(1.2f, 0.05f); dc1->setChildScale(0.25f); dc1->setSpeed(0.0f); dc1->setPlaying(true);
-    Child* dc2 = new Child(1.4f, 0.05f); dc2->setChildScale(0.25f); dc2->setSpeed(0.0f); dc2->setPlaying(true);
-    Child* dc3 = new Child(-3.2f, 0.1f); dc3->setChildScale(0.2f); dc3->setSpeed(0.0f); dc3->setPlaying(true);
+    Child* dc1 = new Child(1.2f, 0.05f, 0); dc1->setChildScale(0.25f); dc1->setSpeed(0.0f); dc1->setPlaying(true);
+    Child* dc2 = new Child(1.4f, 0.05f, 2); dc2->setChildScale(0.25f); dc2->setSpeed(0.0f); dc2->setPlaying(true);
+    Child* dc3 = new Child(-3.2f, 0.1f, 3); dc3->setChildScale(0.2f); dc3->setSpeed(0.0f); dc3->setPlaying(true);
     distantChildren.push_back(dc1);
     distantChildren.push_back(dc2);
     distantChildren.push_back(dc3);
 
     // 5 children sitting in a circle beside the river (moved further right)
     // Center around X = 4.8f, Y = 0.16f
-    Child* rc1 = new Child(4.8f, 0.18f); rc1->setChildScale(0.3f); rc1->setSitting(true);
-    Child* rc2 = new Child(4.72f, 0.16f); rc2->setChildScale(0.3f); rc2->setSitting(true);
-    Child* rc3 = new Child(4.88f, 0.16f); rc3->setChildScale(0.3f); rc3->setSitting(true);
-    Child* rc4 = new Child(4.75f, 0.14f); rc4->setChildScale(0.3f); rc4->setSitting(true);
-    Child* rc5 = new Child(4.85f, 0.14f); rc5->setChildScale(0.3f); rc5->setSitting(true);
+    Child* rc1 = new Child(4.8f, 0.18f, 0); rc1->setChildScale(0.3f); rc1->setSitting(true);
+    Child* rc2 = new Child(4.72f, 0.16f, 1); rc2->setChildScale(0.3f); rc2->setSitting(true);
+    Child* rc3 = new Child(4.88f, 0.16f, 2); rc3->setChildScale(0.3f); rc3->setSitting(true);
+    Child* rc4 = new Child(4.75f, 0.14f, 3); rc4->setChildScale(0.3f); rc4->setSitting(true);
+    Child* rc5 = new Child(4.85f, 0.14f, 0); rc5->setChildScale(0.3f); rc5->setSitting(true);
     distantChildren.push_back(rc1);
     distantChildren.push_back(rc2);
     distantChildren.push_back(rc3);
@@ -103,10 +103,26 @@ void VillageScene::init() {
         schoolOfFish.push_back(new Fish(-5.5f + i*1.2f, 0.3f, 0.9f, 0.6f, 0.2f));
     }
 
-    clouds[0] = new Cloud(-4.5f, 0.7f, 1.2f);
-    clouds[1] = new Cloud(-1.0f, 0.8f, 0.9f);
-    clouds[2] = new Cloud( 3.0f, 0.6f, 1.1f);
-    for(int i=0; i<3; i++) clouds[i]->setBounds(-7.5f, 7.5f);
+    // Birds Initialization
+    // 1. Flock of flying birds
+    for(int i=0; i<6; i++) {
+        birds.push_back(new Bird(-2.0f + i*0.15f, 0.65f + (i%2)*0.05f, true));
+    }
+    // 2. Sitting birds in trees
+    float vhousePositions[] = {-5.0f, -3.8f, -2.4f, -1.1f, 0.4f, 1.8f, 3.0f, 4.3f};
+    for(int i=0; i<8; i++) {
+        float hX = vhousePositions[i];
+        float hY = -0.1f + (i % 2 == 0 ? 0.03f : -0.03f);
+        // Place a bird near the top of every other tree
+        if (i % 2 == 0) {
+            birds.push_back(new Bird(hX + 0.22f + (float)(rand()%10)/100.0f, hY + 0.35f, false));
+        }
+    }
+
+    for(int i=0; i<3; i++) {
+        clouds[i] = new Cloud(-3.0f + i*5.0f, 0.6f + (i%2)*0.1f, 1.2f + (i%2)*0.3f);
+        clouds[i]->setBounds(-7.5f, 7.5f);
+    }
 
     // Initialize stars once
     for (int i = 0; i < 100; i++) {
@@ -138,6 +154,7 @@ VillageScene::~VillageScene() {
     for(auto g : goats) delete g;
     for(auto h : hens) delete h;
     for(int i=0; i<3; i++) delete clouds[i];
+    for(auto b : birds) delete b;
 }
 
 void VillageScene::update() {
@@ -162,6 +179,7 @@ void VillageScene::update() {
     
     river.update();
     for(int i=0; i<3; i++) clouds[i]->update(isWindy, isStormy);
+    for(auto b : birds) b->update();
 }
 
 void VillageScene::render() {
@@ -249,6 +267,7 @@ void VillageScene::render() {
     // Farm animals rendered before people
     for(auto g : goats) g->render();
     for(auto h : hens) h->render();
+    for(auto b : birds) b->render();
 
     // Child Park in the middle free space (shifted slightly right)
     drawChildPark(-0.50f, -0.25f);

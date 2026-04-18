@@ -17,7 +17,6 @@ void UrbanScene::init() {
     buildings[2] = new Building(0.85f, -0.4f, 6, 0.18f, 0); // Office
 
     mainRoad = new Road(0.0f, -0.6f, 0.4f);
-    trafficLight = new TrafficLight(-0.25f, -0.4f);
 
     for(int i=0; i<4; i++) {
         streetLights[i] = new LightingSystem(-0.8f + i*0.5f, -0.55f);
@@ -45,16 +44,30 @@ void UrbanScene::init() {
         // Field is roughly X: -0.85 to -0.35, Y: -0.15 to -0.3
         float fx = -0.75f + i * 0.15f;
         float fy = -0.22f;
-        Child* s = new Child(fx, fy);
-        s->setSpeed(0.0f);
+        Child* s = new Child(fx, fy, i % 4);
+        s->setSpeed(0.004f); // Football players are moving
+        s->setBounds(-0.85f, -0.35f); // Stay on the school field
         s->setPlaying(true); 
+        s->setChildScale(0.35f); 
         students.push_back(s);
     }
     // Child walking on the footpath
-    students.push_back(new Child(-1.0f, -0.52f));
+    Child* walker = new Child(-1.0f, -0.52f, 1);
+    walker->setChildScale(0.35f);
+    walker->setSpeed(0.0f); // Stationary as per request
+    students.push_back(walker);
 
     clouds[0] = new Cloud(-0.4f, 0.8f, 1.0f);
     clouds[1] = new Cloud( 0.4f, 0.7f, 1.2f);
+
+    // Flock of flying birds
+    for(int i=0; i<4; i++) {
+        birds.push_back(new Bird(-0.3f + i*0.14f, 0.82f + (i%2)*0.02f, true));
+    }
+    // Sitting birds
+    birds.push_back(new Bird(0.12f, 0.15f, false)); // On hospital entrance
+    birds.push_back(new Bird(-0.1f, 0.22f, false)); // On hospital roof edge
+    birds.push_back(new Bird(0.85f, 0.15f, false)); // On a building or tree area
 
     // Vehicles on the road
     vehicles.push_back(new Vehicle(-0.8f, -0.72f, 1, 0.008f));  // Bus
@@ -72,7 +85,7 @@ void UrbanScene::init() {
 UrbanScene::~UrbanScene() {
     delete school; delete hospital;
     for(int i=0; i<3; i++) delete buildings[i];
-    delete mainRoad; delete trafficLight;
+    delete mainRoad;
     delete footPath;
     for(int i=0; i<4; i++) delete streetLights[i];
     for(auto c : citizens) delete c;
@@ -80,6 +93,7 @@ UrbanScene::~UrbanScene() {
     for(auto d : doctors) delete d;
     for(auto v : vehicles) delete v;
     for(int i=0; i<2; i++) delete clouds[i];
+    for(auto b : birds) delete b;
     delete rain; delete storm;
 }
 
@@ -92,7 +106,6 @@ void UrbanScene::update() {
 
     school->update(hour);
     hospital->update(0.016f); // approx dt
-    trafficLight->update(1.0f);
 
     for(auto c : citizens) c->update();
     for(auto s : students) s->update();
@@ -100,6 +113,7 @@ void UrbanScene::update() {
     for(auto v : vehicles) v->update();
     for(int i=0; i<4; i++) streetLights[i]->update(isNight);
     for(int i=0; i<2; i++) clouds[i]->update(isWindy, isStormy);
+    for(auto b : birds) b->update();
 
     if (isRainy || isStormy) rain->update();
     if (isStormy) storm->update();
@@ -130,13 +144,13 @@ void UrbanScene::render() {
     
     mainRoad->render();
     footPath->render();
-    trafficLight->render();
 
     for(int i=0; i<4; i++) streetLights[i]->render();
     for(auto c : citizens) c->render();
     for(auto s : students) s->render();
     for(auto d : doctors) d->render();
     for(auto v : vehicles) v->render();
+    for(auto b : birds) b->render();
 
     // Render Alamin (Main Character)
     Application::getInstance().getAlamin()->render();

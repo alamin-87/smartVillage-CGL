@@ -13,7 +13,13 @@ Welcome to **SmartVillage**, a state-of-the-art 2D Computer Graphics simulation 
 ### 🔊 Dynamic Atmospheric Sound System
 Integrated with the **Windows Media Control Interface (MCI)**, SmartVillage features a weather-responsive audio engine:
 - 👋 **Real-time Weather Audio**: Ambient rain, storm, and wind sound loops that sync with visual effects.
-- 🐄 **Life-like Entity Sounds**: Directional and event-based sounds for cows, goats, and hens.
+- 🚶 **Interactive Child Sound**: Manual toggle control over child vocalizations (Press 'C').
+- 🐄 **Life-like Entity Sounds**: Sounds for cows, goats, and hens with optimized clucking frequency.
+
+### 🚶 Advanced Entity Animation
+- **4-Directional Movement**: Humans and children features realistic 4-oriented walking (Front, Back, Side) with unique rendering for each view.
+- **Stable Navigation**: Adjusted movement speeds for a natural, grounded feel.
+- **Enhanced Wildlife**: Redesigned birds with segmented wings and fan tails for lifelike flight.
 
 ### 🌤️ Environment & Weather Engine
 - **Day/Night Cycle**: A smooth 360-degree solar orbit that transitions the world between dawn, midday, twilight, and deep night.
@@ -45,6 +51,7 @@ SmartVillage features three distinct, strictly decoupled environments:
 | **`1`** | Switch to **Main Village** |
 | **`2`** | Switch to **Rural Homestead** |
 | **`3`** | Switch to **Urban District** |
+| **`C`** | Toggle **Child Sound** (On/Off Loop) |
 | **`D` / `N`** | Force **Day** / **Night** Mode |
 | **`R` / `S` / `W`** | Toggle **Rain** / **Storm** / **Wind** |
 | **`ESC`** | Exit Simulation |
