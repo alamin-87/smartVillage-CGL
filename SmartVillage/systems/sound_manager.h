@@ -19,7 +19,11 @@ public:
     void playCow();
     void playGoat();
     void playHen();
+    void stopHen();
+    bool isHenPlaying() const { return henPlaying; }
     void playBird();
+    void stopBird();
+    bool isBirdPlaying() const { return birdPlaying; }
     void playChild();
     void playDuck();
     void stopChild();
@@ -35,6 +39,8 @@ private:
     bool stormPlaying;
     bool windPlaying;
     bool childPlaying;
+    bool birdPlaying;
+    bool henPlaying;
 };
 
 #endif

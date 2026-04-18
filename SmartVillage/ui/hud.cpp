@@ -114,6 +114,27 @@ void HUD::render(float sunAngle, bool isRainy, bool isStormy, bool isWindy) {
 
     // Energy Dashboard (right side)
     EnergySystem::getInstance().renderDashboard(0.52f, 0.55f);
+
+    // Keyboard Function Controls (Bottom Right)
+    glEnable(GL_BLEND);
+    glColor4f(0.0f, 0.05f, 0.1f, 0.6f);
+    glBegin(GL_QUADS);
+        glVertex2f(0.55f, -0.65f);
+        glVertex2f(0.95f, -0.65f);
+        glVertex2f(0.95f, -0.95f);
+        glVertex2f(0.55f, -0.95f);
+    glEnd();
+    glDisable(GL_BLEND);
+
+    glColor3f(1.0f, 1.0f, 0.0f);
+    drawText(0.57f, -0.62f, "SYSTEM CONTROLS");
+    
+    glColor3f(1.0f, 1.0f, 1.0f);
+    drawText(0.57f, -0.70f, "[1,2,3] : Change Scene");
+    drawText(0.57f, -0.75f, "[C, B, H]: Toggle Child/Bird/Hen Audio");
+    drawText(0.57f, -0.80f, "[D, N]   : Force Day/Night");
+    drawText(0.57f, -0.85f, "[R,S,W] : Weather Effects");
+    drawText(0.57f, -0.90f, "[ESC]   : Power Off System");
 }
 
 void HUD::drawText(float x, float y, const char* text) {

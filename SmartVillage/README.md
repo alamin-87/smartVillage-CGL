@@ -52,6 +52,8 @@ SmartVillage features three distinct, strictly decoupled environments:
 | **`2`** | Switch to **Rural Homestead** |
 | **`3`** | Switch to **Urban District** |
 | **`C`** | Toggle **Child Sound** (On/Off Loop) |
+| **`B`** | Toggle **Bird Sound** (On/Off Loop) |
+| **`H`** | Toggle **Hen Sound** (On/Off Loop) |
 | **`D` / `N`** | Force **Day** / **Night** Mode |
 | **`R` / `S` / `W`** | Toggle **Rain** / **Storm** / **Wind** |
 | **`ESC`** | Exit Simulation |

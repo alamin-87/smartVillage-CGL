@@ -5,13 +5,15 @@
 
 #pragma comment(lib, "winmm.lib")
 
-SoundManager::SoundManager() : rainPlaying(false), stormPlaying(false), windPlaying(false), childPlaying(false) {}
+SoundManager::SoundManager() : rainPlaying(false), stormPlaying(false), windPlaying(false), childPlaying(false), birdPlaying(false), henPlaying(false) {}
 
 SoundManager::~SoundManager() {
     stopRain();
     stopStorm();
     stopWind();
     stopChild();
+    stopBird();
+    stopHen();
 }
 
 SoundManager& SoundManager::getInstance() {
@@ -92,23 +94,31 @@ void SoundManager::playGoat() {
 }
 
 void SoundManager::playHen() {
-    static bool opened = false;
-    if (!opened) {
-        sendCmd("open \"media/sounds/hen.mp3\" type mpegvideo alias hen_sound");
-        opened = true;
-    }
+    if (henPlaying) return;
+    sendCmd("open \"media/sounds/hen.mp3\" type mpegvideo alias hen_sound");
+    sendCmd("play hen_sound repeat");
+    henPlaying = true;
+}
+
+void SoundManager::stopHen() {
+    if (!henPlaying) return;
     sendCmd("stop hen_sound");
-    sendCmd("play hen_sound from 0");
+    sendCmd("close hen_sound");
+    henPlaying = false;
 }
 
 void SoundManager::playBird() {
-    static bool opened = false;
-    if (!opened) {
-        sendCmd("open \"media/sounds/bird.mp3\" type mpegvideo alias bird_sound");
-        opened = true;
-    }
+    if (birdPlaying) return;
+    sendCmd("open \"media/sounds/bird.mp3\" type mpegvideo alias bird_sound");
+    sendCmd("play bird_sound repeat");
+    birdPlaying = true;
+}
+
+void SoundManager::stopBird() {
+    if (!birdPlaying) return;
     sendCmd("stop bird_sound");
-    sendCmd("play bird_sound from 0");
+    sendCmd("close bird_sound");
+    birdPlaying = false;
 }
 
 void SoundManager::playChild() {

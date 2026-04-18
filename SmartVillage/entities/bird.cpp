@@ -29,7 +29,7 @@ void Bird::update() {
         wingAngle += wingDir * flapSpeed;
         if (wingAngle > 35.0f || wingAngle < -20.0f) wingDir *= -1.0f;
 
-        // Bird chirping sound disabled as per user request
+        // Keyboard-controlled sounds now, auto-trigger disabled
         /*
         if (rand() % 2000 == 0) {
             SoundManager::getInstance().playBird();

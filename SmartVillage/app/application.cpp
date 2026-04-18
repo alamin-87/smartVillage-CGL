@@ -170,6 +170,14 @@ void Application::handleInput(unsigned char key) {
             if (SoundManager::getInstance().isChildPlaying()) SoundManager::getInstance().stopChild();
             else SoundManager::getInstance().playChild();
             break;
+        case 'b':
+            if (SoundManager::getInstance().isBirdPlaying()) SoundManager::getInstance().stopBird();
+            else SoundManager::getInstance().playBird();
+            break;
+        case 'h':
+            if (SoundManager::getInstance().isHenPlaying()) SoundManager::getInstance().stopHen();
+            else SoundManager::getInstance().playHen();
+            break;
         case 27: exit(0); break; // ESC to quit
     }
 }
